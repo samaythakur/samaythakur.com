@@ -331,6 +331,7 @@ mark.search-highlight {
   grid-template-columns: 70px 1fr;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 4px 4px 0px var(--border-color);
+  overflow: hidden;
 }
 
 .project-card.search-hidden {
@@ -362,8 +363,18 @@ mark.search-highlight {
   font-family: var(--font-head);
   font-size: 1.4rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
   letter-spacing: -0.01em;
+}
+
+.project-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .project-desc {
@@ -384,7 +395,7 @@ mark.search-highlight {
 .project-image-container {
   margin-bottom: 1.5rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1.5rem;
 }
 
@@ -440,6 +451,7 @@ mark.search-highlight {
   padding: 6px 12px;
   background: #ffffff;
   transition: all 0.15s ease;
+  margin-top: 0.5rem;
 }
 
 .project-link:hover {
@@ -492,6 +504,7 @@ mark.search-highlight {
   width: 100%;
   border-collapse: collapse;
   box-shadow: 4px 4px 0px var(--border-color);
+  table-layout: fixed;
 }
 
 .academic-table tr.search-hidden {
@@ -503,6 +516,7 @@ mark.search-highlight {
   padding: 1.1rem 1.25rem;
   text-align: left;
   vertical-align: top;
+  word-wrap: break-word;
 }
 
 .academic-table th {
@@ -517,8 +531,7 @@ mark.search-highlight {
 .academic-table td.year {
   font-family: var(--font-mono);
   font-weight: 700;
-  width: 170px;
-  white-space: nowrap;
+  width: 180px;
   background: var(--bg-surface);
 }
 
@@ -614,6 +627,9 @@ footer {
     border-right: none;
     border-bottom: 2px solid var(--border-color);
   }
+  .academic-table {
+    table-layout: auto;
+  }
 }
 </style>
 </head>
@@ -654,7 +670,7 @@ footer {
         <a href="mailto:samaythakur999@gmail.com" style="text-decoration: underline;">samaythakur999@gmail.com</a>
       </div>
       <div class="sidebar-contact-item" style="margin-top: 1.25rem; display: flex; gap: 8px; flex-wrap: wrap;">
-        <a href="https://drive.google.com/file/d/1zEhkbOWo-wpqsLoGeUJHW0I2pfLOYsB7/view?usp=drive_link/preview" target="_blank" class="contact-btn primary">RESUME ↗</a>
+        <a href="https://drive.google.com/file/d/1DcRWG_T9plAPYaMY_DSdamIA8gIhjm4_/view?usp=drive_link/preview" target="_blank" class="contact-btn primary">RESUME ↗</a>
         <a href="https://linkedin.com/in/samaythakur" target="_blank" class="contact-btn">LINKEDIN ↗</a>
         <a href="https://github.com/samaythakur" target="_blank" class="contact-btn">GITHUB ↗</a>
       </div>
@@ -714,6 +730,58 @@ footer {
         <article class="project-card">
           <div class="project-num">1</div>
           <div class="project-details">
+            <h4 class="project-title">SmartQC: On-Device Visual Quality Inspection</h4>
+            <div class="project-subtitle">
+              Qualcomm | Snapdragon® AI Lab Build & Present Challenge
+            </div>
+
+            <div class="project-desc">
+              <ul>
+                <li>The problem:- I built SmartQC, an on-device visual quality inspection tool. The idea started from a problem I'd seen before — small food producers and workshops can't afford industrial inspection hardware, but the alternative, cloud-based AI inspection, has real downsides: latency, ongoing cost per scan, and sending production images off-site. So I set out to build something that ran entirely on-device, on hardware a small business might already own.</li>
+                <li>Building and validating the model:-I trained an image classifier — MobileNetV2 — on a labeled dataset of good and defective bread samples, using transfer learning so I didn't need to train from scratch. It reached 99.2% validation accuracy. But I didn't stop at accuracy — I ran a full evaluation: confusion matrix, precision, recall, and ROC-AUC, which came out to 0.9997. That mattered to me because accuracy alone can hide problems, like a model that's great on one class and bad on the other.</li>
+                <li>Making it deployment-ready:-I exported the model to ONNX and ran it through Qualcomm AI Hub, their cloud compilation service, to optimize it specifically for the Snapdragon X Elite chip. That gave me a genuinely deployment-ready model — not just a model that works in a notebook, but one compiled for real target hardware.</li>
+                <li>Turning results into product decisions:-Then I built an actual desktop app around it, and I made some deliberate product decisions here, not just engineering ones. For example, I added a confidence-threshold feature — if the model isn't confident, instead of forcing a guess, it flags the result as uncertain for manual review. I added that specifically after testing the model against a larger, messier batch of 352 real-world images and seeing it get a few genuinely ambiguous cases wrong — so I used that evaluation data to decide what feature to build next, rather than guessing.</li>
+                <li>Building for the real user, not just the demo:-I also added Grad-CAM explainability — a heatmap that shows which part of the image the model actually looked at — because for something like quality inspection, an operator won't trust a black-box yes/no answer. Being able to see 'here's the mold it detected' builds real trust in the tool. And I added batch processing with CSV export, because a real inspection workflow isn't one image at a time — someone would want to run a whole folder and get a report.</li>
+                <li>Results:-On the real-world batch test — 352 images the model hadn't seen — it got 97.4% right, correctly flagged the ambiguous ones instead of guessing wrong, and that gave me confidence the system would hold up outside a clean lab dataset.</li>
+                <li>Conclusion:-So end to end: I went from identifying a real gap — affordable, private, on-device inspection — to a trained and rigorously evaluated model, to a deployment-optimized build, to an actual usable application with features driven by what the evaluation data told me operators would need, all documented so someone else could reproduce or extend it.</li>
+                <li>Tech/Tools:-Python, PyTorch, ONNX, Qualcomm AI Hub, PyQt5, OpenCV, scikit-learn</li>
+              </ul>
+            </div>
+
+            <div class="project-image-container">
+              <div class="project-media-item">
+                <img src="defective_result.jpg" alt="SmartQC: On-Device Visual Quality Inspection" class="clickable-image">
+                <div class="project-image-title">DEFECTIVE RESULT</div>
+              </div>
+              <div class="project-media-item">
+                <img src="gradcam_result.png" alt="SmartQC: On-Device Visual Quality Inspection" class="clickable-image">
+                <div class="project-image-title">GRAD-CAM EXPLAINABILITY</div>
+              </div>
+              <div class="project-media-item">
+                <img src="confusion_matrix_clean.jpg" alt="SmartQC: On-Device Visual Quality Inspection" class="clickable-image">
+                <div class="project-image-title">CONFUSION MATRIX</div>
+              </div>
+              <div class="project-media-item">
+                <img src="roc_curve_clean.jpg" alt="SmartQC: On-Device Visual Quality Inspection" class="clickable-image">
+                <div class="project-image-title">ROC CURVE</div>
+              </div>
+              <div class="project-media-item">
+                <video controls preload="metadata">
+                  <source src="SmartQC_Demo.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+                <div class="project-image-title">PROJECT DEMO</div>
+              </div>
+            </div>
+
+            <a href="https://github.com/samaythakur/SmartQC-On-Device-Visual-Quality-Inspection" target="_blank" class="project-link">View Source Repository ↗</a>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="project-card">
+          <div class="project-num">2</div>
+          <div class="project-details">
             <h4 class="project-title">CynLr EPM PoC</h4>
             <div class="project-desc">
               <ul>
@@ -738,9 +806,9 @@ footer {
           </div>
         </article>
 
-        <!-- Project 2 -->
+        <!-- Project 3 -->
         <article class="project-card">
-          <div class="project-num">2</div>
+          <div class="project-num">3</div>
           <div class="project-details">
             <h4 class="project-title">AI-Based Bread Quality Indicator System</h4>
             <div class="project-desc">
@@ -768,9 +836,9 @@ footer {
           </div>
         </article>
 
-        <!-- Project 3 -->
+        <!-- Project 4 -->
         <article class="project-card">
-          <div class="project-num">3</div>
+          <div class="project-num">4</div>
           <div class="project-details">
             <h4 class="project-title">Stock Market Price Prediction & Analysis</h4>
             <div class="project-desc">
@@ -799,9 +867,9 @@ footer {
           </div>
         </article>
 
-        <!-- Project 4 -->
+        <!-- Project 5 -->
         <article class="project-card">
-          <div class="project-num">4</div>
+          <div class="project-num">5</div>
           <div class="project-details">
             <h4 class="project-title">Automatic Water Level Control System</h4>
             <div class="project-desc">
@@ -834,9 +902,9 @@ footer {
       <table class="academic-table">
         <thead>
           <tr>
-            <th>Period</th>
-            <th>Role & Organization</th>
-            <th>Description & Key Technical Contributions</th>
+            <th style="width: 20%;">Period</th>
+            <th style="width: 30%;">Role & Organization</th>
+            <th style="width: 50%;">Description & Key Technical Contributions</th>
           </tr>
         </thead>
         <tbody>
@@ -864,10 +932,10 @@ footer {
       <table class="academic-table">
         <thead>
           <tr>
-            <th>Year / Timeline</th>
-            <th>Degree / Qualification</th>
-            <th>Institution</th>
-            <th>Performance</th>
+            <th style="width: 22%;">Year / Timeline</th>
+            <th style="width: 33%;">Degree / Qualification</th>
+            <th style="width: 30%;">Institution</th>
+            <th style="width: 15%;">Performance</th>
           </tr>
         </thead>
         <tbody>
@@ -975,10 +1043,10 @@ footer {
       <table class="academic-table">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Certificate Title</th>
-            <th>Issuing Authority</th>
-            <th>Credential Details</th>
+            <th style="width: 15%;">Date</th>
+            <th style="width: 40%;">Certificate Title</th>
+            <th style="width: 20%;">Issuing Authority</th>
+            <th style="width: 25%;">Credential Details</th>
           </tr>
         </thead>
         <tbody>
